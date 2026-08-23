@@ -1,56 +1,51 @@
 # Breast Ultrasound Tumor Segmentation
 
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-Keras-orange)
+![U--Net](https://img.shields.io/badge/Model-U--Net-blueviolet)
+![Medical Imaging](https://img.shields.io/badge/Task-Medical%20Image%20Segmentation-green)
+
 A deep learning project for **semantic segmentation of breast tumors in ultrasound images**, comparing a baseline U-Net with U-Net variants that use **ResNet50** and **MobileNetV3Large** encoders.
 
 > **Medical disclaimer:** This project is for educational and research purposes only. It is not a clinical diagnostic system and must not be used for medical decision-making.
 
-## Overview
+## Highlights
 
-The project uses the **Breast Ultrasound Images Dataset (BUSI)** from Kaggle. The current notebook preprocesses benign and malignant ultrasound images and their ground-truth masks, then trains and evaluates three segmentation architectures.
-
-### Compared Models
-
-- U-Net
-- ResNet50-U-Net
-- MobileNetV3-U-Net
+- Semantic segmentation on the **BUSI breast ultrasound dataset**
+- Comparison of **U-Net**, **ResNet50-U-Net** and **MobileNetV3-U-Net**
+- Custom **Dice coefficient** and **IoU** metrics
+- Combined **0.3 × BCE + 0.7 × Dice Loss** objective
+- Best test result: **ResNet50-U-Net — Dice = 0.6910, IoU = 0.5383**
 
 ## Deep Learning Workflow
 
-```text
-BUSI ultrasound images + ground-truth masks
-                ↓
-Image / mask preprocessing
-                ↓
-Train / validation / test split
-                ↓
-U-Net / ResNet50-U-Net / MobileNetV3-U-Net
-                ↓
-Training with BCE + Dice loss
-                ↓
-Evaluation on test set
-                ↓
-Loss · Dice Coefficient · IoU
-                ↓
-Architecture comparison
+```mermaid
+flowchart LR
+    A[BUSI ultrasound images] --> B[Image & mask preprocessing]
+    B --> C[Train / validation / test split]
+    C --> D1[U-Net]
+    C --> D2[ResNet50-U-Net]
+    C --> D3[MobileNetV3-U-Net]
+    D1 --> E[Training]
+    D2 --> E
+    D3 --> E
+    E --> F[BCE + Dice Loss]
+    F --> G[Test evaluation]
+    G --> H[Loss · Dice · IoU]
+    H --> I[Architecture comparison]
 ```
 
 ## Dataset
 
-The notebook uses the Kaggle BUSI dataset path:
+The notebook uses the **Breast Ultrasound Images Dataset (BUSI)** from Kaggle and processes the `benign` and `malignant` classes with their segmentation masks.
 
-```text
-Dataset_BUSI_with_GT
-```
-
-The current preprocessing pipeline uses the `benign` and `malignant` classes and pairs each ultrasound image with its segmentation mask.
-
-Data splitting in the notebook:
+Current split configuration:
 
 - Test split: 15% of the complete processed set
 - Validation split: 15% of the remaining training portion
 - Random seed: 42
 
-Input sizes used in the notebook:
+Input configuration:
 
 - U-Net / ResNet50-U-Net: 256 × 256
 - MobileNetV3-U-Net: 224 × 224
@@ -58,24 +53,26 @@ Input sizes used in the notebook:
 
 ## Tech Stack
 
-- **Language:** Python
-- **Deep Learning:** TensorFlow / Keras
-- **Backbones:** ResNet50, MobileNetV3Large
-- **Image Processing:** OpenCV
-- **Data / Numerical Computing:** NumPy
-- **Visualization:** Matplotlib
-- **Data Splitting:** Scikit-learn
-- **Environment:** Kaggle / Jupyter Notebook
+| Area | Tools |
+|---|---|
+| Language | Python |
+| Deep Learning | TensorFlow, Keras |
+| Architectures | U-Net, ResNet50, MobileNetV3Large |
+| Image Processing | OpenCV |
+| Numerical Computing | NumPy |
+| Visualization | Matplotlib |
+| Data Splitting | Scikit-learn |
+| Environment | Kaggle, Jupyter Notebook |
 
 ## Loss and Metrics
 
-Training uses a combined **Binary Cross-Entropy + Dice Loss**:
+Training uses:
 
 ```text
-Loss = 0.3 × BCE + 0.7 × Dice Loss
+Loss = 0.3 × Binary Cross-Entropy + 0.7 × Dice Loss
 ```
 
-Models are compared using:
+Evaluation metrics:
 
 - Loss
 - Dice Coefficient
@@ -89,13 +86,18 @@ Models are compared using:
 | **ResNet50-U-Net** | **0.2736** | **0.6910** | **0.5383** |
 | MobileNetV3-U-Net | 0.4137 | 0.4886 | 0.3264 |
 
-**ResNet50-U-Net achieved the best test performance** among the three evaluated models, with the highest Dice coefficient and IoU and the lowest test loss.
+**ResNet50-U-Net achieved the best test performance** among the three evaluated architectures, with the highest Dice and IoU and the lowest test loss.
+
+Machine-readable results are stored in [`results/test_metrics.json`](results/test_metrics.json).
 
 ## Repository Structure
 
 ```text
-Breast-Tumor-Segmentation-in-Ultrasound-Images-Using-U-Net-with-ResNet50-and-MobileNetV3-Backbones/
-├── nhandangdoituong-taduykhanh-2311554980.ipynb  # End-to-end experiment notebook
+breast-ultrasound-tumor-segmentation/
+├── notebooks/
+│   └── breast_ultrasound_tumor_segmentation.ipynb
+├── results/
+│   └── test_metrics.json
 ├── README.md
 ├── requirements.txt
 └── .gitignore
@@ -103,16 +105,11 @@ Breast-Tumor-Segmentation-in-Ultrasound-Images-Using-U-Net-with-ResNet50-and-Mob
 
 ## Setup
 
-### 1. Clone the repository
+Clone the repository and create a virtual environment:
 
 ```bash
 git clone https://github.com/tdk1522005/Breast-Tumor-Segmentation-in-Ultrasound-Images-Using-U-Net-with-ResNet50-and-MobileNetV3-Backbones.git
 cd Breast-Tumor-Segmentation-in-Ultrasound-Images-Using-U-Net-with-ResNet50-and-MobileNetV3-Backbones
-```
-
-### 2. Create a virtual environment
-
-```bash
 python -m venv .venv
 ```
 
@@ -128,49 +125,45 @@ macOS/Linux:
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Prepare the dataset
-
 Download the BUSI dataset from Kaggle and update the dataset path in the notebook if you are running outside Kaggle.
 
-### 5. Run the notebook
+Run the notebook:
 
 ```bash
-jupyter notebook
+jupyter notebook notebooks/breast_ultrasound_tumor_segmentation.ipynb
 ```
-
-Open `nhandangdoituong-taduykhanh-2311554980.ipynb` and execute the cells in order.
 
 ## What This Project Demonstrates
 
-- Medical image preprocessing and mask preparation
+- Medical image and mask preprocessing
 - Semantic segmentation with U-Net
-- Transfer learning / pretrained encoder backbones
-- ResNet50 and MobileNetV3 encoder comparison
-- Custom Dice and IoU metrics
+- Encoder-backbone comparison
+- Transfer learning with ResNet50 and MobileNetV3
+- Custom segmentation metrics
 - Combined BCE + Dice loss
-- Training-history and test-result visualization
-- Quantitative comparison across segmentation architectures
+- Training-history visualization
+- Quantitative architecture comparison
 
 ## Current Limitations
 
-- The project is currently organized primarily as a single experimental notebook.
-- Results are based on the current dataset split and training configuration.
-- The current experiment processes benign and malignant images; broader validation is needed before making conclusions about generalization.
+- The workflow is still primarily notebook-based.
+- Results are based on the current split and training configuration.
+- The current experiment focuses on benign and malignant samples from BUSI.
 - No external clinical validation is included.
 
-## Planned Improvements
+## Roadmap
 
-- Refactor reusable model, preprocessing and evaluation code into a `src/` package.
+- Refactor model, preprocessing and evaluation logic into `src/`.
 - Add qualitative prediction examples: input image, ground-truth mask and predicted mask.
-- Add automated experiment configuration and reproducibility controls.
-- Add cross-validation or repeated experiments to measure result stability.
-- Compare computational cost and inference speed across backbones.
+- Add experiment configuration files and reproducibility controls.
+- Evaluate stability with repeated experiments or cross-validation.
+- Compare inference speed and computational cost across backbones.
 
 ## Author
 
